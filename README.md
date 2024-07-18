@@ -9,3 +9,6 @@ ansible-playbook playbook.yaml -i inventory --tags cleanup
 
 Update roles/kvm-role/files/user-data
 Replace username, passwd hash and ssh keys 
+
+# Detailed procedure below:
+https://www.fler.biz/posts/vmware-to-kvm/
