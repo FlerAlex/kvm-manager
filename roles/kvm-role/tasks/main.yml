@@ -1,0 +1,85 @@
+---
+# tasks file for kvm-role
+- name: Deploy VM's
+  tags:
+    - deploy
+    - never
+  block:
+    - name: Check VM state
+      ansible.builtin.command: virsh domstate {{ inventory_hostname }}
+      changed_when: false
+      delegate_to: localhost
+      register: vmstate
+
+  rescue:
+    - name: Create VM directory if it does not exist
+      ansible.builtin.file:
+        path: /var/vms/{{ inventory_hostname }}
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+
+    - name: Copy disk file to the vm directory
+      ansible.builtin.copy:
+        src: /var/vms/images/noble-server-cloudimg-amd64.img
+        dest: /var/vms/{{ inventory_hostname }}/{{ inventory_hostname }}-noble-server-cloudimg-amd64.img
+        owner: root
+        group: root
+        mode: '0644'
+      delegate_to: localhost
+
+
+    - name: Copy user-data to the vm directory
+      ansible.builtin.copy:
+        src: user-data
+        dest: /var/vms/{{ inventory_hostname }}/user-data
+        owner: root
+        group: root
+        mode: '0644'
+      delegate_to: localhost
+
+    - name: Template meta-data to VM directory
+      ansible.builtin.template:
+        src: meta-data.j2
+        dest: /var/vms/{{ inventory_hostname }}/meta-data
+        owner: root
+        group: root
+        mode: '0644'
+      delegate_to: localhost
+
+    - name: Generate ISO file
+      ansible.builtin.command:
+        cmd: genisoimage -output {{ inventory_hostname }}.iso -volid cidata -joliet -rock user-data meta-data
+        chdir: /var/vms/{{ inventory_hostname }}
+      changed_when: true
+      delegate_to: localhost
+
+    - name: Define  VM
+      ansible.builtin.command: "virt-install --name {{ inventory_hostname }} --memory {{ memory }} \
+								--vcpus {{ vcpus }}  --disk={{ disk }} \
+								--disk={{ iso }}  --os-variant {{ os }} \
+								--virt-type kvm --graphics none \
+								--network network={{ network }},model=virtio \
+								--noautoconsole \
+								--import"
+      changed_when: true
+      delegate_to: localhost
+
+- name: Cleanup
+  tags:
+    - cleanup
+    - never
+  block:
+    - name: Shutdown VM's
+      ansible.builtin.command: virsh shutdown {{ inventory_hostname }}
+      changed_when: true
+      delegate_to: localhost
+
+    - name: Wait for VM's to shutdown
+      ansible.builtin.pause:
+        seconds: 30
+
+    - name: Undefine VM's and remove storage
+      ansible.builtin.command: virsh undefine {{ inventory_hostname }} --remove-all-storage
+      changed_when: true
+      delegate_to: localhost

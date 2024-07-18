@@ -1,0 +1,5 @@
+node1 memory=2048 vcpus=2 disk=/var/vms/node1/node1-noble-server-cloudimg-amd64.img iso=/var/vms/node1/node1.iso network=hostbridge os=ubuntu-lts-latest
+node2 memory=2048 vcpus=2 disk=/var/vms/node2/node2-noble-server-cloudimg-amd64.img iso=/var/vms/node2/node2.iso network=hostbridge os=ubuntu-lts-latest
+node3 memory=2048 vcpus=2 disk=/var/vms/node3/node3-noble-server-cloudimg-amd64.img iso=/var/vms/node3/node3.iso network=hostbridge os=ubuntu-lts-latest
+node4 memory=2048 vcpus=2 disk=/var/vms/node4/node4-noble-server-cloudimg-amd64.img iso=/var/vms/node4/node4.iso network=hostbridge os=ubuntu-lts-latest
+node5 memory=2048 vcpus=2 disk=/var/vms/node5/node5-noble-server-cloudimg-amd64.img iso=/var/vms/node5/node5.iso network=hostbridge os=ubuntu-lts-latest

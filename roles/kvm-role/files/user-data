@@ -1,0 +1,11 @@
+#cloud-config
+users:
+  - default
+  - name: afler
+    gecos: Alex Fler
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    lock_passwd: false
+    passwd: $y$XXXXXXXXXXXXXXXXXZZZZZZZZZZZZZ1$Tf00r5AnjhlxjihPPtrTagaDWfA
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFfIft1SZZZZZZZZZZZZZZZZZZZZZZ root@lab

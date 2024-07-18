@@ -1,0 +1,6 @@
+- name: KVM playbook
+  hosts: all
+  gather_facts: false
+
+  roles:
+    - kvm-role
